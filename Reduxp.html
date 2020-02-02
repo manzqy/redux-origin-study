@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <button onclick="store.dispatcher({type: 'decrement', n: 2})">-</button>
+    <span id="count">10</span>
+    <button onclick="store.dispatcher({type: 'increment', n: 2})">+</button>
+  </div>
+</body>
+<script>
+  const span = document.querySelector('#count')
+  const countState = {
+    count: 5
+  }
+  // decrement = (n) => {
+  //   countState.count = countState.count - n
+  //   render(countState)
+  // }
+  // increment = (n) => {
+  //   countState.count = countState.count + n
+  //   render(countState)
+  // }
+  // const dispatcher = (action) => {
+  //   changeAction(action)
+  //   render(countState)
+  // }
+  const changeAction = (state, action) => {
+    switch (action.type) {
+      case 'decrement':
+        state.count = countState.count - action.n
+        break;
+      case 'increment':
+        state.count = countState.count + action.n
+        break;
+      default:
+        break;
+    }
+  }
+  const createStore = (state, changeAction) => {
+    const getState = () => state
+    const renderList = []
+    const addRender = (e) => renderList.push(e)
+    const dispatcher = (action) => {
+      changeAction(state, action)
+      renderList.forEach(v => v())
+    }
+    return {
+      getState,
+      addRender,
+      dispatcher
+    }
+  }
+  const store = createStore(countState, changeAction)
+  const render = () => {
+    span.innerHTML = store.getState().count
+  }
+  render()
+  store.addRender(render)
+</script>
+</html>
